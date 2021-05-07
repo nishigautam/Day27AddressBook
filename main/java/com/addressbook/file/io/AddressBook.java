@@ -1,5 +1,10 @@
 package com.addressbook.file.io;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.TreeMap;
@@ -166,11 +171,48 @@ public class AddressBook implements IAddressBook {
 
     /**
      *
-     * @param = display the contact which has been added or updated.
+     * @param file-io
      *
      */
+    public static String contact_FILE = "ContactFile.txt";
+
+    public void writeDataToFile(List<ContactDetail> contactDetailList) {
+        StringBuffer employeeBuffer = new StringBuffer();
+        contactDetailList.forEach( employee -> {
+            String empDataString = employee.toString().concat("\n");
+            employeeBuffer.append(empDataString);
+        });
+        try {
+            Files.write(Paths.get(contact_FILE), employeeBuffer.toString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<ContactDetail> readDataFromFile() {
+        List<ContactDetail> contactDetailList = new ArrayList<>();
+        try {
+            Files.lines(new File("ContactFile.txt").toPath()).map(line -> line.trim())
+                    .forEach(line -> System.out.println(line));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return contactDetailList;
+    }
+
+    public void printData() {
+        try {
+            Files.lines(new File("ContactFile.txt").toPath()).forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * display all the contacts added to addressBook
+     */
     public void display() {
-        for ( ContactDetail contactDetail : contact ) {
+        for (ContactDetail contactDetail : contact) {
             System.out.println(contactDetail);
         }
     }
